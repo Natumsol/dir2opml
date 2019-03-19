@@ -4,11 +4,16 @@
 ## 快速开始
 
 1. **安装**
-
-    `npm i -g dir2opml`
+    1. 安装命令行工具`tree`
+        ```shell
+        brew install tree
+        ```
+    2. 安装 `dir2opml`
+        ```shell
+        npm i -g dir2opml
+        ```
 
 2. **使用**
-
     ![](https://img.alicdn.com/tfs/TB1LCwpMHvpK1RjSZPiXXbmwXXa-1276-208.png)
 
 3. 效果图
@@ -113,5 +118,5 @@
         └── webpack.config.js
         ```
 
-    - 导入生成的脑图
-        ![](https://img.alicdn.com/tfs/TB15yQlMSrqK1RjSZK9XXXyypXa-996-6074.png)
+    - 导入`tree.opml`到mindNode生成的脑图
+        ![](https://img.alicdn.com/tfs/TB1Ie3wMQzoK1RjSZFlXXai4VXa-1386-6072.png)

@@ -1,7 +1,5 @@
 #!/usr/bin/env node
-
 'use strict'
-
 
 const fs = require("fs");
 const path = require('path');
@@ -10,30 +8,6 @@ const homedir = require('os').homedir();
 const xmljs = require("xml-js");
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-
-const opml = {
-    declaration: {
-        attributes: {
-            version: '1.0',
-            encoding: "utf-8"
-        }
-    },
-    elements: [{
-        type: 'element',
-        name: 'opml',
-        attributes: {
-            version: '1.0'
-        },
-        elements: [
-            {
-                type: 'element',
-                name: "body",
-                elements: []
-            }
-        ]
-    }]
-};
-
 
 function parse(obj) {
     if (!obj.contents) {
@@ -65,41 +39,76 @@ inquirer.prompt([{
     validate: input => {
         return path.isAbsolute(input);
     }
-}])
-    .then(answers => {
-        const { dir } = answers;
-        child_process.exec(`tree -L 3 --dirsfirst -a -I .DS_Store -I .git -N ${dir}`, (err, stdout, stderr) => {
-            if (err) {
-                console.error(err);
-                process.exit(-1);
+}]).then(answers => {
+    const { dir } = answers;
+
+    const opml = {
+        declaration: {
+            attributes: {
+                version: '1.0',
+                encoding: "utf-8"
             }
-            if (stderr) {
-                console.log(stderr);
-                process.exit(-1);
-            }
-            fs.writeFileSync(path.join(homedir, 'Desktop/tree.txt'), stdout)
-        })
-        child_process.exec(`tree -L 3 --dirsfirst -a -I .DS_Store  -I .git -N -J ${dir}`, (err, stdout, stderr) => {
-            if (err) {
-                console.error(err);
-                process.exit(-1);
-            }
-            if (stderr) {
-                console.log(stderr);
-                process.exit(-1);
-            }
+        },
+        elements: [{
+            type: 'element',
+            name: 'opml',
+            attributes: {
+                version: '1.0'
+            },
+            elements: [
+                {
+                    type: 'element',
+                    name: 'head',
+                    elements: [{
+                        type: 'element',
+                        name: 'title',
+                        elements: [{
+                            type: 'text',
+                            text: dir,
+                        }]
+                    }]
+                },
+                {
+                    type: 'element',
+                    name: "body",
+                    elements: []
+                }
+            ]
+        }]
+    };
 
-            let treeJson = JSON.parse(stdout);
+    child_process.exec(`tree -L 3 --dirsfirst -a -I .DS_Store -I .git -N ${dir}`, (err, stdout, stderr) => {
+        if (err) {
+            console.error(err);
+            process.exit(-1);
+        }
+        if (stderr) {
+            console.log(stderr);
+            process.exit(-1);
+        }
+        fs.writeFileSync(path.join(homedir, 'Desktop/tree.txt'), stdout)
+    })
+    child_process.exec(`tree -L 3 --dirsfirst -a -I .DS_Store  -I .git -N -J ${dir}`, (err, stdout, stderr) => {
+        if (err) {
+            console.error(err);
+            process.exit(-1);
+        }
+        if (stderr) {
+            console.log(stderr);
+            process.exit(-1);
+        }
 
-            treeJson = treeJson.filter(item => item.type !== 'report')[0];
+        let treeJson = JSON.parse(stdout);
 
-            opml.elements[0].elements[0].elements = treeJson.contents.map(parse);
-            fs.writeFileSync(path.join(homedir, 'Desktop/tree.opml'), xmljs.js2xml(opml, { compact: false, ignoreComment: true, spaces: 4 }), 'utf-8');
+        treeJson = treeJson.filter(item => item.type !== 'report')[0];
 
-            console.log(chalk.green(`目录结构树和OPMl文件已生成，文件清单：\nOPML文件：${path.join(homedir, 'Desktop/tree.opml')}\n文本文件：${path.join(homedir, 'Desktop/tree.txt')}`))
-        })
+        opml.elements[0].elements[1].elements = treeJson.contents.map(parse);
+        fs.writeFileSync(path.join(homedir, 'Desktop/tree.opml'), xmljs.js2xml(opml, { compact: false, ignoreComment: true, spaces: 4 }), 'utf-8');
 
-    });
+        console.log(chalk.green(`目录结构树和OPMl文件已生成，文件清单：\nOPML文件：${path.join(homedir, 'Desktop/tree.opml')}\n文本文件：${path.join(homedir, 'Desktop/tree.txt')}`))
+    })
+
+});
 
 
 
