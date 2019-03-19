@@ -1,0 +1,20 @@
+{
+  "name": "dir2opml",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "dir2opml": "./bin/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "natumsol@gmail.com",
+  "keywords": [],
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "inquirer": "^6.2.2",
+    "xml-js": "^1.6.11"
+  }
+}
