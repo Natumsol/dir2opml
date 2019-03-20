@@ -77,7 +77,7 @@ inquirer.prompt([{
         }]
     };
 
-    child_process.exec(`tree -L 3 --dirsfirst -a -I .DS_Store -I .git -N ${dir}`, (err, stdout, stderr) => {
+    child_process.exec(`tree -L 3 --dirsfirst -a -I '.DS_Store|.git' -N ${dir}`, (err, stdout, stderr) => {
         if (err) {
             console.error(err);
             process.exit(-1);
@@ -88,7 +88,7 @@ inquirer.prompt([{
         }
         fs.writeFileSync(path.join(homedir, 'Desktop/tree.txt'), stdout)
     })
-    child_process.exec(`tree -L 3 --dirsfirst -a -I .DS_Store  -I .git -N -J ${dir}`, (err, stdout, stderr) => {
+    child_process.exec(`tree -L 3 --dirsfirst -a -I '.DS_Store|.git' -N -J ${dir}`, (err, stdout, stderr) => {
         if (err) {
             console.error(err);
             process.exit(-1);
